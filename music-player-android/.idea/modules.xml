@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$USER_HOME$/Documents/project/music-player-android/music-player-android/mobile/mobile.iml" filepath="$USER_HOME$/Documents/project/music-player-android/music-player-android/mobile/mobile.iml" />
+      <module fileurl="file://$USER_HOME$/Documents/project/music-player-android/music-player-android/music-player-android.iml" filepath="$USER_HOME$/Documents/project/music-player-android/music-player-android/music-player-android.iml" />
+      <module fileurl="file://$USER_HOME$/Documents/project/music-player-android/music-player-android/wear/wear.iml" filepath="$USER_HOME$/Documents/project/music-player-android/music-player-android/wear/wear.iml" />
+    </modules>
+  </component>
+</project>
+
