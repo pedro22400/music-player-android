@@ -192,4 +192,48 @@ public class ServicePlayMusic extends Service
         mp.start();
     }
 
+    public int getPosn(){
+        return player.getCurrentPosition();
+    }
+
+    public int getDur(){
+        return player.getDuration();
+    }
+
+    public boolean isPng(){
+        return player.isPlaying();
+    }
+
+    public void pausePlayer(){
+        player.pause();
+    }
+
+    public void seek(int posn){
+        player.seekTo(posn);
+    }
+
+    public void go(){
+        player.start();
+    }
+    
+    public void playNext(){
+        this.songPosn++;
+        if (songPosn==songs.size() ){
+            songPosn = 0;
+        }
+        playSong();
+        
+    }
+
+    public void playPrev(){
+        this.songPosn--;
+        if (songPosn<0){
+            songPosn = songs.size()-1; 
+        }
+        playSong();
+
+    }
+
+
+
 }

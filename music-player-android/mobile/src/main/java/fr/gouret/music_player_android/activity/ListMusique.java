@@ -18,6 +18,7 @@ import android.view.View;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.MediaController;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -27,11 +28,12 @@ import java.util.List;
 import fr.gouret.music_player_android.R;
 import fr.gouret.music_player_android.adapter.SongAdapter;
 import fr.gouret.music_player_android.asynctask.DownloadSongAsyncTask;
+import fr.gouret.music_player_android.model.MusicController;
 import fr.gouret.music_player_android.model.Song;
 import fr.gouret.music_player_android.service.ServicePlayMusic;
 
 
-public class ListMusique extends Activity implements LoaderManager.LoaderCallbacks<ArrayList<Song>> {
+public class ListMusique extends Activity implements LoaderManager.LoaderCallbacks<ArrayList<Song>>, MediaController.MediaPlayerControl {
 
     //song list variables
     private ListView songView;
@@ -39,7 +41,8 @@ public class ListMusique extends Activity implements LoaderManager.LoaderCallbac
     private Intent playIntent;
     private boolean musicBound=false;
     private ArrayList<Song> songs;
-   
+    private MusicController controller;
+
 
 
     @Override
@@ -52,6 +55,7 @@ public class ListMusique extends Activity implements LoaderManager.LoaderCallbac
 
         //create and set adapter
         getLoaderManager().initLoader(0, null, this).forceLoad();
+        initController();
     }
 
     //connect to the service
@@ -69,8 +73,8 @@ public class ListMusique extends Activity implements LoaderManager.LoaderCallbac
             musicBound = false;
         }
     };
-    
-    
+
+
     @Override
     protected void onStart() {
         super.onStart();
@@ -98,12 +102,12 @@ public class ListMusique extends Activity implements LoaderManager.LoaderCallbac
     @Override
     public Loader<ArrayList<Song>> onCreateLoader(int i, Bundle bundle) {
         return new DownloadSongAsyncTask(this.getBaseContext());
-        
+
     }
 
     @Override
     public void onLoadFinished(Loader<ArrayList<Song>> arrayListLoader, ArrayList<Song> songs) {
-        this.songs = songs; 
+        this.songs = songs;
         final SongAdapter songAdt = new SongAdapter(this.getApplicationContext(),songs);
         songView.setAdapter(songAdt);
         songView.setChoiceMode(AbsListView.CHOICE_MODE_SINGLE);
@@ -113,9 +117,11 @@ public class ListMusique extends Activity implements LoaderManager.LoaderCallbac
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 musicService.setSong(i);
                 musicService.playSong();
+                controller.show(0);
             }
         });
     }
+
 
     @Override
     public void onLoaderReset(Loader<ArrayList<Song>> arrayListLoader) {
@@ -123,4 +129,84 @@ public class ListMusique extends Activity implements LoaderManager.LoaderCallbac
     }
 
 
+    private void initController(){
+        controller = new MusicController(this);
+        controller.setPrevNextListeners(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                musicService.playNext();
+                controller.show(0);
+            }
+        }, new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                musicService.playPrev();
+                controller.show(0);
+            }
+        });
+        controller.setMediaPlayer(this);
+        controller.setAnchorView(findViewById(R.id.song_list));
+        controller.setEnabled(true);
+
+    }
+
+    @Override
+    public void start() {
+        musicService.go();
+    }
+
+    @Override
+    public void pause() {
+        musicService.pausePlayer();
+    }
+
+    @Override
+    public int getDuration() {
+        if(musicService!=null && musicBound && musicService.isPng())
+        return musicService.getDur();
+        else return 0;
+    }
+
+    @Override
+    public int getCurrentPosition() {
+        if (musicService.isPng()){
+            return musicService.getPosn(); 
+        } 
+        return 0;
+    }
+
+    @Override
+    public void seekTo(int i) {
+           musicService.seek(i);
+    }
+
+    @Override
+    public boolean isPlaying() {
+        return musicService.isPng();
+    }
+
+    @Override
+    public int getBufferPercentage() {
+        return 0;
+    }
+
+    @Override
+    public boolean canPause() {
+        return true;
+    }
+
+    @Override
+    public boolean canSeekBackward() {
+        return true;
+    }
+
+    @Override
+    public boolean canSeekForward() {
+        return true;
+    }
+
+    @Override
+    public int getAudioSessionId() {
+        return 0;
+    }
 }
