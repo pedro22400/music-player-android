@@ -20,17 +20,26 @@ import android.content.ContentUris;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.IntentSender;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.media.RemoteControlClient;
 import android.net.Uri;
 import android.os.Binder;
+import android.os.Bundle;
 import android.os.IBinder;
 import android.os.PowerManager;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.widget.Toast;
+
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.ResultCallback;
+import com.google.android.gms.wearable.MessageApi;
+import com.google.android.gms.wearable.MessageEvent;
+import com.google.android.gms.wearable.Wearable;
 
 import fr.gouret.music_player_android.R;
 import fr.gouret.music_player_android.activity.ListMusique;
@@ -95,7 +104,9 @@ import fr.gouret.music_player_android.notification.NotificationMusic;
  */
 public class ServicePlayMusic extends Service
         implements MediaPlayer.OnPreparedListener, MediaPlayer.OnErrorListener,
-        MediaPlayer.OnCompletionListener {
+        MediaPlayer.OnCompletionListener, GoogleApiClient.ConnectionCallbacks,GoogleApiClient.OnConnectionFailedListener,
+        MessageApi.MessageListener {
+    private static final int REQUEST_RESOLVE_ERROR = 34;
     //media player
     private MediaPlayer player;
     //song list
@@ -104,6 +115,8 @@ public class ServicePlayMusic extends Service
     private int songPosn;
     //binder
     private final IBinder musicBind = new MusicBinder();
+    private GoogleApiClient mGoogleApiClient;
+
 
     private String songTitle;
     private static final int NOTIFY_ID=1;
@@ -117,6 +130,19 @@ public class ServicePlayMusic extends Service
         player = new MediaPlayer();
         //initialize
         initMusicPlayer();
+        mGoogleApiClient = new GoogleApiClient.Builder(this)
+                .addApi(Wearable.API)
+                .addConnectionCallbacks(this)
+                .addOnConnectionFailedListener(this)
+                .build();
+        mGoogleApiClient.connect();
+    }
+
+    @Override
+    public void onDestroy() {
+        Wearable.MessageApi.removeListener(mGoogleApiClient, this);
+        mGoogleApiClient.disconnect();
+        super.onDestroy();
     }
 
     public void initMusicPlayer(){
@@ -135,6 +161,46 @@ public class ServicePlayMusic extends Service
         songs=theSongs;
     }
 
+    @Override
+    public void onConnected(Bundle bundle) {
+        Wearable.MessageApi.addListener(mGoogleApiClient, this);
+    }
+
+    @Override
+    public void onConnectionSuspended(int i) {
+
+    }
+
+    @Override
+    public void onConnectionFailed(ConnectionResult connectionResult) {
+        if (connectionResult.hasResolution()) {
+            mGoogleApiClient.connect();
+        } else {
+            Log.e("ListMusique", "Connection to Google API client has failed");
+            Wearable.MessageApi.removeListener(mGoogleApiClient, this);
+        }
+    }
+    @Override
+    public void onMessageReceived(MessageEvent messageEvent) {
+        Log.d("TAG", "onMessageReceived() A message from watch was received:" + messageEvent
+                .getRequestId() + " " + messageEvent.getPath());
+        if (messageEvent.getPath().equals("PLAY")){
+            if (this.isPng()){
+                this.pausePlayer();
+            } else {
+                this.playSong();
+            }
+        } else if (messageEvent.getPath().equals("STOP")){
+
+        }else if (messageEvent.getPath().equals("NEXT")){
+            this.playNext();
+        }else if (messageEvent.getPath().equals("PREV")){
+            this.playPrev();
+        }else {
+            Toast.makeText(this, "Action non valide", Toast.LENGTH_SHORT).show();
+        }
+
+    }
     //binder
     public class MusicBinder extends Binder {
         public ServicePlayMusic getService() {
@@ -177,8 +243,32 @@ public class ServicePlayMusic extends Service
             Log.e("MUSIC SERVICE", "Error setting data source", e);
         }
         player.prepareAsync();
+        Wearable.MessageApi.sendMessage(
+                mGoogleApiClient, "blabla", "/start-activity", new byte[0]).setResultCallback(
+                new ResultCallback<MessageApi.SendMessageResult>() {
+                    @Override
+                    public void onResult(MessageApi.SendMessageResult sendMessageResult) {
+                        if (!sendMessageResult.getStatus().isSuccess()) {
+                            Log.e("ListMusique", "Failed to send message with status code: "
+                                    + sendMessageResult.getStatus().getStatusCode());
+                        } else {
+                            Log.e("ListMusique", "Success");
+                        }
+                    }
+                }
+        );
+        sendInfo(playSong);
+
     }
 
+    public void sendInfo(Song song){
+        Wearable.MessageApi.sendMessage(
+                mGoogleApiClient, "envoieTitre", song.getTitle() + "/" + song.getAlbum() + "/"+song.getArtist() + "/", new byte[0]
+        );
+
+
+    }
+    
     //set the song
     public void setSong(int songIndex){
         songPosn=songIndex;

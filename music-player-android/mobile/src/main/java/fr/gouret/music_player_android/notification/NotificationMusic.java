@@ -9,6 +9,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.widget.RemoteViews;
 
+import fr.gouret.music_player_android.R;
+import fr.gouret.music_player_android.activity.ListMusique;
 import fr.gouret.music_player_android.model.Song;
 
 /**
@@ -71,7 +73,7 @@ public class NotificationMusic extends Notification {
 //
 //
 //        // Intent that launches the "Now Playing" Activity
-//        Intent notifyIntent = new Intent(context, ActivityNowPlaying.class);
+//        Intent notifyIntent = new Intent(context, ListMusique.class);
 //        notifyIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 //
 //        // Letting the Intent be executed later by other application.
@@ -84,7 +86,7 @@ public class NotificationMusic extends Notification {
 //
 //
 //        // Setting our custom appearance for the notification
-//        notificationView = new RemoteViews(kMP.packageName, R.layout.notification);
+//        notificationView = new RemoteViews("fr.gouret.music_player_android", R.layout.notification);
 //
 //        // Manually settings the buttons and text
 //        // (ignoring the defaults on the XML)
@@ -144,7 +146,7 @@ public class NotificationMusic extends Notification {
     public static class NotificationPlayButtonHandler extends BroadcastReceiver {
         @Override
         public void onReceive(Context context, Intent intent) {
-//            kMP.musicService.togglePlayback();
+//            ListMusique.getMusicService().togglePlayback();
         }
     }
 

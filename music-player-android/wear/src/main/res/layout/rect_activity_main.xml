@@ -1,9 +1,65 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
     android:layout_height="match_parent" android:orientation="vertical"
-    tools:context=".MainActivity" tools:deviceIds="wear_square">
+    tools:context=".MainActivity" tools:deviceIds="wear_square"
+    android:background="@color/white">
+    <ImageView
+            android:id="@+id/play_pause"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:src="@mipmap/play"
+        android:onClick="play"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true" />
+    <ImageView
+        android:id="@+id/left"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:src="@mipmap/seekback"
+        android:onClick="prev"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentStart="true" />
+    <ImageView
+        android:id="@+id/right"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:src="@mipmap/seekfront"
+        android:onClick="next"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true" />
 
-    <TextView android:id="@+id/text" android:layout_width="wrap_content"
-        android:layout_height="wrap_content" android:text="@string/hello_square" />
-</LinearLayout>
+    <TextView
+        android:id="@+id/title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="mon titre est superre long, j'espere qu'il va passer"
+        android:textColor="@color/black"
+        android:gravity="center"
+        android:layout_below="@+id/artist"
+        android:layout_alignParentStart="true"
+        android:layout_marginTop="27dp"
+        android:textSize="15sp"
+        android:textStyle="bold"/>
+    <TextView
+        android:id="@+id/artist"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="artist"
+        android:textColor="@color/black"
+        android:gravity="center"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentStart="true" />
+    <TextView
+        android:id="@+id/album"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="album"
+        android:textColor="@color/black"
+        android:gravity="center"
+        android:layout_centerVertical="true"
+        android:layout_alignParentStart="true"
+        android:textStyle="italic"/>
+    
+    
+</RelativeLayout>

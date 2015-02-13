@@ -6,6 +6,7 @@ import android.content.ComponentName;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentSender;
 import android.content.Loader;
 import android.content.ServiceConnection;
 import android.database.Cursor;
@@ -13,6 +14,7 @@ import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -21,6 +23,18 @@ import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.MediaController;
+import android.widget.Toast;
+
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.ResultCallback;
+import com.google.android.gms.wearable.DataApi;
+import com.google.android.gms.wearable.DataEventBuffer;
+import com.google.android.gms.wearable.MessageApi;
+import com.google.android.gms.wearable.MessageEvent;
+import com.google.android.gms.wearable.Node;
+import com.google.android.gms.wearable.NodeApi;
+import com.google.android.gms.wearable.Wearable;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -40,12 +54,10 @@ public class ListMusique extends Activity implements LoaderManager.LoaderCallbac
 
     //song list variables
     private ListView songView;
-    private ServicePlayMusic musicService= null ;
+    private ServicePlayMusic musicService = null;
     private Intent playIntent;
-    private boolean musicBound=false;
-    private ArrayList<Song> songs;
+    private boolean musicBound = false;
     private MusicController controller;
-
 
 
     @Override
@@ -54,18 +66,15 @@ public class ListMusique extends Activity implements LoaderManager.LoaderCallbac
         setContentView(R.layout.activity_main);
 
         //retrieve list view
-        songView = (ListView)findViewById(R.id.song_list);
+        songView = (ListView) findViewById(R.id.song_list);
 
-
-
-       
     }
 
     //connect to the service
-    private ServiceConnection musicConnection = new ServiceConnection(){
+    private ServiceConnection musicConnection = new ServiceConnection() {
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
-            ServicePlayMusic.MusicBinder binder = (ServicePlayMusic.MusicBinder)service;
+            ServicePlayMusic.MusicBinder binder = (ServicePlayMusic.MusicBinder) service;
             //get service
             musicService = binder.getService();
             musicBound = true;
@@ -81,7 +90,7 @@ public class ListMusique extends Activity implements LoaderManager.LoaderCallbac
     @Override
     protected void onStart() {
         super.onStart();
-        if(playIntent==null){
+        if (playIntent == null) {
             playIntent = new Intent(getApplicationContext(), ServicePlayMusic.class);
             bindService(playIntent, musicConnection, Context.BIND_AUTO_CREATE);
             startService(playIntent);
@@ -92,8 +101,10 @@ public class ListMusique extends Activity implements LoaderManager.LoaderCallbac
 
     @Override
     protected void onStop() {
-        super.onStop();
+
         unbindService(musicConnection);
+
+        super.onStop();
     }
 
     @Override
@@ -111,9 +122,8 @@ public class ListMusique extends Activity implements LoaderManager.LoaderCallbac
     }
 
     @Override
-    public void onLoadFinished(Loader<ArrayList<Song>> arrayListLoader, ArrayList<Song> songs) {
-        final SongAdapter songAdt = new SongAdapter(this.getApplicationContext(),songs);
-
+    public void onLoadFinished(Loader<ArrayList<Song>> arrayListLoader, final ArrayList<Song> songs) {
+        final SongAdapter songAdt = new SongAdapter(this.getApplicationContext(), songs);
         final QuickScroll quickscroll = (QuickScroll) findViewById(R.id.quickscroll);
         quickscroll.init(QuickScroll.TYPE_POPUP, songView, songAdt, QuickScroll.STYLE_HOLO);
         quickscroll.setFixedSize(1);
@@ -123,14 +133,15 @@ public class ListMusique extends Activity implements LoaderManager.LoaderCallbac
         songView.setChoiceMode(AbsListView.CHOICE_MODE_SINGLE);
         musicService.setList(songs);
 
-        
 
         songView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+
                 musicService.setSong(i);
                 musicService.playSong();
                 controller.show(0);
+
             }
         });
 
@@ -144,7 +155,7 @@ public class ListMusique extends Activity implements LoaderManager.LoaderCallbac
     }
 
 
-    private void initController(){
+    private void initController() {
         controller = new MusicController(this);
         controller.setPrevNextListeners(new View.OnClickListener() {
             @Override
@@ -176,22 +187,22 @@ public class ListMusique extends Activity implements LoaderManager.LoaderCallbac
 
     @Override
     public int getDuration() {
-        if(musicService!=null && musicBound && musicService.isPng())
-        return musicService.getDur();
+        if (musicService != null && musicBound && musicService.isPng())
+            return musicService.getDur();
         else return 0;
     }
 
     @Override
     public int getCurrentPosition() {
-        if (musicService.isPng()){
-            return musicService.getPosn(); 
-        } 
+        if (musicService.isPng()) {
+            return musicService.getPosn();
+        }
         return 0;
     }
 
     @Override
     public void seekTo(int i) {
-           musicService.seek(i);
+        musicService.seek(i);
     }
 
     @Override
