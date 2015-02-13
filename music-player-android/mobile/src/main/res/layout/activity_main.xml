@@ -1,8 +1,8 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
 	xmlns:tools="http://schemas.android.com/tools"
 	android:layout_width="fill_parent"
 	android:layout_height="fill_parent"
-	android:orientation="vertical"
+	android:orientation="horizontal"
 	android:background="#FF330000"
 	tools:context=".ListMusique" >
 
@@ -10,9 +10,23 @@
 
 	<ListView
 		android:id="@+id/song_list"
-		android:layout_width="fill_parent"
-		android:layout_height="wrap_content" >
+		android:layout_width="match_parent"
+		android:layout_height="fill_parent" >
 	</ListView>
 
+    <TextView
+        android:id="@id/android:empty"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:text="" />
 
-</LinearLayout>
+    <quickScroll.QuickScroll
+        android:id="@+id/quickscroll"
+        android:layout_width="wrap_content"
+        android:layout_alignTop="@id/song_list"
+        android:layout_alignBaseline="@id/song_list"
+        android:layout_height="match_parent"
+        android:layout_alignParentRight="true"/>
+
+</RelativeLayout>

@@ -12,8 +12,10 @@ import android.widget.TextView;
 
 import fr.gouret.music_player_android.R;
 import fr.gouret.music_player_android.model.Song;
+import quickScroll.QuickScroll;
+import quickScroll.Scrollable;
 
-public class SongAdapter extends BaseAdapter  {
+public class SongAdapter extends BaseAdapter  implements Scrollable{
 	
 	//song list and layout
 	private ArrayList<Song> songs;
@@ -59,6 +61,19 @@ public class SongAdapter extends BaseAdapter  {
 		artistView.setText(currSong.getArtist());
 		//set position as tag
 		songLay.setTag(position);
-		return songLay;
+
+
+        return songLay;
 	}
+
+    @Override
+    public String getIndicatorForPosition(int childposition, int groupposition) {
+        Song song = songs.get(childposition);
+        return Character.toString(song.getTitle().charAt(0));
+    }
+
+    @Override
+    public int getScrollPosition(int childposition, int groupposition) {
+        return childposition;
+    }
 }

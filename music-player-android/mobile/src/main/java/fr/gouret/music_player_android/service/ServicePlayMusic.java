@@ -11,6 +11,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Random;
 
+import android.app.Notification;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.BroadcastReceiver;
@@ -31,6 +32,8 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.widget.Toast;
 
+import fr.gouret.music_player_android.R;
+import fr.gouret.music_player_android.activity.ListMusique;
 import fr.gouret.music_player_android.external.RemoteControlClientCompat;
 import fr.gouret.music_player_android.external.RemoteControlHelper;
 import fr.gouret.music_player_android.model.Song;
@@ -102,6 +105,9 @@ public class ServicePlayMusic extends Service
     //binder
     private final IBinder musicBind = new MusicBinder();
 
+    private String songTitle;
+    private static final int NOTIFY_ID=1;
+    
     public void onCreate(){
         //create the service
         super.onCreate();
@@ -156,6 +162,7 @@ public class ServicePlayMusic extends Service
         player.reset();
         //get song
         Song playSong = songs.get(songPosn);
+        songTitle = playSong.getTitle();
         //get id
         long currSong = playSong.getId();
         //set uri
@@ -190,6 +197,23 @@ public class ServicePlayMusic extends Service
     public void onPrepared(MediaPlayer mp) {
         //start playback
         mp.start();
+        songTitle=songs.get(songPosn).getTitle();
+        Intent notIntent = new Intent(this, ListMusique.class);
+        notIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        PendingIntent pendInt = PendingIntent.getActivity(this, 0,
+                notIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+        Notification.Builder builder = new Notification.Builder(this);
+
+        builder.setContentIntent(pendInt)
+                .setSmallIcon(R.drawable.play)
+                .setTicker(songTitle)
+                .setOngoing(true)
+                .setContentTitle("Playing")
+        .setContentText(songTitle);
+        Notification not = builder.build();
+
+        startForeground(NOTIFY_ID, not);
     }
 
     public int getPosn(){

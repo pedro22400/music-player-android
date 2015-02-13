@@ -9,9 +9,11 @@ import android.content.Intent;
 import android.content.Loader;
 import android.content.ServiceConnection;
 import android.database.Cursor;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.util.TypedValue;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -31,6 +33,7 @@ import fr.gouret.music_player_android.asynctask.DownloadSongAsyncTask;
 import fr.gouret.music_player_android.model.MusicController;
 import fr.gouret.music_player_android.model.Song;
 import fr.gouret.music_player_android.service.ServicePlayMusic;
+import quickScroll.QuickScroll;
 
 
 public class ListMusique extends Activity implements LoaderManager.LoaderCallbacks<ArrayList<Song>>, MediaController.MediaPlayerControl {
@@ -53,9 +56,9 @@ public class ListMusique extends Activity implements LoaderManager.LoaderCallbac
         //retrieve list view
         songView = (ListView)findViewById(R.id.song_list);
 
-        //create and set adapter
-        getLoaderManager().initLoader(0, null, this).forceLoad();
-        initController();
+
+
+       
     }
 
     //connect to the service
@@ -82,13 +85,15 @@ public class ListMusique extends Activity implements LoaderManager.LoaderCallbac
             playIntent = new Intent(getApplicationContext(), ServicePlayMusic.class);
             bindService(playIntent, musicConnection, Context.BIND_AUTO_CREATE);
             startService(playIntent);
-        }
+        }        //create and set adapter
+        getLoaderManager().initLoader(0, null, this).forceLoad();
+        initController();
     }
 
     @Override
     protected void onStop() {
         super.onStop();
-//        unbindService(musicConnection);
+        unbindService(musicConnection);
     }
 
     @Override
@@ -107,11 +112,19 @@ public class ListMusique extends Activity implements LoaderManager.LoaderCallbac
 
     @Override
     public void onLoadFinished(Loader<ArrayList<Song>> arrayListLoader, ArrayList<Song> songs) {
-        this.songs = songs;
         final SongAdapter songAdt = new SongAdapter(this.getApplicationContext(),songs);
+
+        final QuickScroll quickscroll = (QuickScroll) findViewById(R.id.quickscroll);
+        quickscroll.init(QuickScroll.TYPE_POPUP, songView, songAdt, QuickScroll.STYLE_HOLO);
+        quickscroll.setFixedSize(1);
+        quickscroll.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 48);
+
         songView.setAdapter(songAdt);
         songView.setChoiceMode(AbsListView.CHOICE_MODE_SINGLE);
         musicService.setList(songs);
+
+        
+
         songView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
@@ -120,6 +133,8 @@ public class ListMusique extends Activity implements LoaderManager.LoaderCallbac
                 controller.show(0);
             }
         });
+
+
     }
 
 
@@ -147,7 +162,6 @@ public class ListMusique extends Activity implements LoaderManager.LoaderCallbac
         controller.setMediaPlayer(this);
         controller.setAnchorView(findViewById(R.id.song_list));
         controller.setEnabled(true);
-
     }
 
     @Override
