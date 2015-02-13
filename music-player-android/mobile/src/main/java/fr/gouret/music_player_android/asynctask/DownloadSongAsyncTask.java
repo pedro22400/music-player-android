@@ -2,6 +2,8 @@ package fr.gouret.music_player_android.asynctask;
 
 import android.content.AsyncTaskLoader;
 import android.content.Context;
+import android.view.View;
+import android.widget.AdapterView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,23 +18,13 @@ import fr.gouret.music_player_android.model.SongList;
  */
 public class DownloadSongAsyncTask extends AsyncTaskLoader<ArrayList<Song>> {
     SongList songList;
-    Context context;
-    
-    
-   public DownloadSongAsyncTask(Context c) {
-       super(c);
-       context=c;
-   }
 
-    @Override
-    protected void onStartLoading() {
-        super.onStartLoading();
-        songList = SongList.getInstance();
+    public DownloadSongAsyncTask(Context context) {
+        super(context);
     }
-
     @Override
     public ArrayList<Song> loadInBackground() {
-        songList.scanSongs(context, "external");
-        return songList.getSongs();
+        return SongList.getInstance().scanSongs(getContext(), "external");
     }
+
 }

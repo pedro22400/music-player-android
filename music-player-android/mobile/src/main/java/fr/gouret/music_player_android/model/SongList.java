@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.List;
 
 import android.content.ContentResolver;
 import android.content.ContentValues;
@@ -98,7 +99,7 @@ public class SongList {
 	 * - "external" To scan for songs on the SD card.
 	 * - "both"     To scan for songs anywhere.
 	 */
-	public void scanSongs(Context c, String fromWhere) {
+	public ArrayList<Song> scanSongs(Context c, String fromWhere) {
 
 		// This is a rather complex function that interacts with
 		// the underlying Android database.
@@ -111,7 +112,7 @@ public class SongList {
 		// Checking for flags so we don't get called twice
 		// Fucking Java that doesn't allow local static variables.
 		if (scanningSongs)
-			return;
+			return songs;
 		scanningSongs = true;
 
 		// The URIs that tells where we should scan for files.
@@ -326,6 +327,7 @@ public class SongList {
 
 		scannedSongs  = true;
 		scanningSongs = false;
+        return songs;
 	}
 
 	public void destroy() {
