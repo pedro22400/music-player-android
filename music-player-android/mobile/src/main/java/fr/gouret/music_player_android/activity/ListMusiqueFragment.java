@@ -1,45 +1,23 @@
 package fr.gouret.music_player_android.activity;
 
-import android.app.Activity;
-import android.app.LoaderManager;
 import android.content.ComponentName;
-import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentSender;
-import android.content.Loader;
 import android.content.ServiceConnection;
-import android.database.Cursor;
-import android.graphics.Color;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.IBinder;
-import android.util.Log;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.LoaderManager;
 import android.util.TypedValue;
-import android.view.Menu;
-import android.view.MenuItem;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.MediaController;
-import android.widget.Toast;
-
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.common.api.ResultCallback;
-import com.google.android.gms.wearable.DataApi;
-import com.google.android.gms.wearable.DataEventBuffer;
-import com.google.android.gms.wearable.MessageApi;
-import com.google.android.gms.wearable.MessageEvent;
-import com.google.android.gms.wearable.Node;
-import com.google.android.gms.wearable.NodeApi;
-import com.google.android.gms.wearable.Wearable;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
 
 import fr.gouret.music_player_android.R;
 import fr.gouret.music_player_android.adapter.SongAdapter;
@@ -50,7 +28,7 @@ import fr.gouret.music_player_android.service.ServicePlayMusic;
 import quickScroll.QuickScroll;
 
 
-public class ListMusique extends Activity implements LoaderManager.LoaderCallbacks<ArrayList<Song>>, MediaController.MediaPlayerControl {
+public class ListMusiqueFragment extends Fragment implements LoaderManager.LoaderCallbacks<ArrayList<Song>>, MediaController.MediaPlayerControl {
 
     //song list variables
     private ListView songView;
@@ -58,17 +36,23 @@ public class ListMusique extends Activity implements LoaderManager.LoaderCallbac
     private Intent playIntent;
     private boolean musicBound = false;
     private MusicController controller;
+    int postion;
+    String desiredString;
 
-
+    
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-
-        //retrieve list view
-        songView = (ListView) findViewById(R.id.song_list);
-
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View rootView = inflater.inflate(R.layout.list_musique, container, false);
+        songView = (ListView) rootView.findViewById(R.id.song_list);
+        Bundle bundle = this.getArguments();
+        if (bundle != null){
+            postion= bundle.getInt("position", -1);
+            desiredString = bundle.getString("desiredString");
+        }
+        return rootView;
     }
+
+
 
     //connect to the service
     private ServiceConnection musicConnection = new ServiceConnection() {
@@ -87,51 +71,45 @@ public class ListMusique extends Activity implements LoaderManager.LoaderCallbac
     };
 
 
+
     @Override
-    protected void onStart() {
+    public void onStart() {
         super.onStart();
         if (playIntent == null) {
-            playIntent = new Intent(getApplicationContext(), ServicePlayMusic.class);
-            bindService(playIntent, musicConnection, Context.BIND_AUTO_CREATE);
-            startService(playIntent);
+            playIntent = new Intent(this.getActivity().getApplicationContext(), ServicePlayMusic.class);
+            this.getActivity().bindService(playIntent, musicConnection, Context.BIND_AUTO_CREATE);
+            this.getActivity().startService(playIntent);
         }        //create and set adapter
         getLoaderManager().initLoader(0, null, this).forceLoad();
         initController();
     }
 
     @Override
-    protected void onStop() {
+    public void onStop() {
 
-        unbindService(musicConnection);
+        if (musicBound){
+            this.getActivity().unbindService(musicConnection);
+        }
 
         super.onStop();
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.main, menu);
-        return true;
-    }
-
-
-    @Override
-    public Loader<ArrayList<Song>> onCreateLoader(int i, Bundle bundle) {
-        return new DownloadSongAsyncTask(this.getBaseContext());
+    public android.support.v4.content.Loader<ArrayList<Song>> onCreateLoader(int i, Bundle bundle) {
+        return new DownloadSongAsyncTask(this.getActivity().getBaseContext(), postion, desiredString);
 
     }
 
     @Override
-    public void onLoadFinished(Loader<ArrayList<Song>> arrayListLoader, final ArrayList<Song> songs) {
-        final SongAdapter songAdt = new SongAdapter(this.getApplicationContext(), songs);
-        final QuickScroll quickscroll = (QuickScroll) findViewById(R.id.quickscroll);
-        quickscroll.init(QuickScroll.TYPE_POPUP, songView, songAdt, QuickScroll.STYLE_HOLO);
-        quickscroll.setFixedSize(1);
-        quickscroll.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 48);
+    public void onLoadFinished(android.support.v4.content.Loader<ArrayList<Song>> loader, ArrayList<Song> data) {
+        final SongAdapter songAdt = new SongAdapter(this.getActivity().getApplicationContext(), data);
+
 
         songView.setAdapter(songAdt);
         songView.setChoiceMode(AbsListView.CHOICE_MODE_SINGLE);
-        musicService.setList(songs);
+        if (musicService != null){
+            musicService.setList(data);
+        }
 
 
         songView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -145,18 +123,15 @@ public class ListMusique extends Activity implements LoaderManager.LoaderCallbac
             }
         });
 
-
     }
-
 
     @Override
-    public void onLoaderReset(Loader<ArrayList<Song>> arrayListLoader) {
+    public void onLoaderReset(android.support.v4.content.Loader<ArrayList<Song>> loader) {
 
     }
 
-
     private void initController() {
-        controller = new MusicController(this);
+        controller = new MusicController(this.getActivity().getBaseContext());
         controller.setPrevNextListeners(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -171,7 +146,7 @@ public class ListMusique extends Activity implements LoaderManager.LoaderCallbac
             }
         });
         controller.setMediaPlayer(this);
-        controller.setAnchorView(findViewById(R.id.song_list));
+        controller.setAnchorView(this.getActivity().findViewById(R.id.song_list));
         controller.setEnabled(true);
     }
 

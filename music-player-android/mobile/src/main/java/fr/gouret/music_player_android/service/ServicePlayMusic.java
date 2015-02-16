@@ -8,33 +8,22 @@ package fr.gouret.music_player_android.service;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.Date;
-import java.util.Random;
 
 import android.app.Notification;
 import android.app.PendingIntent;
 import android.app.Service;
-import android.content.BroadcastReceiver;
-import android.content.ComponentName;
 import android.content.ContentUris;
-import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
-import android.content.IntentSender;
 import android.graphics.Bitmap;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
-import android.media.RemoteControlClient;
 import android.net.Uri;
 import android.os.Binder;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.os.PowerManager;
-import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -50,11 +39,8 @@ import com.google.android.gms.wearable.PutDataRequest;
 import com.google.android.gms.wearable.Wearable;
 
 import fr.gouret.music_player_android.R;
-import fr.gouret.music_player_android.activity.ListMusique;
-import fr.gouret.music_player_android.external.RemoteControlClientCompat;
-import fr.gouret.music_player_android.external.RemoteControlHelper;
+import fr.gouret.music_player_android.activity.ListMusiqueFragment;
 import fr.gouret.music_player_android.model.Song;
-import fr.gouret.music_player_android.notification.NotificationMusic;
 
 
 /**
@@ -348,7 +334,7 @@ public class ServicePlayMusic extends Service
         //start playback
         mp.start();
         songTitle=songs.get(songPosn).getTitle();
-        Intent notIntent = new Intent(this, ListMusique.class);
+        Intent notIntent = new Intent(this, ListMusiqueFragment.class);
         notIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         PendingIntent pendInt = PendingIntent.getActivity(this, 0,
                 notIntent, PendingIntent.FLAG_UPDATE_CURRENT);

@@ -1,15 +1,10 @@
 package fr.gouret.music_player_android.asynctask;
 
-import android.content.AsyncTaskLoader;
 import android.content.Context;
-import android.view.View;
-import android.widget.AdapterView;
+import android.support.v4.content.AsyncTaskLoader;
 
 import java.util.ArrayList;
-import java.util.List;
 
-import fr.gouret.music_player_android.R;
-import fr.gouret.music_player_android.activity.ListMusique;
 import fr.gouret.music_player_android.model.Song;
 import fr.gouret.music_player_android.model.SongList;
 
@@ -18,13 +13,39 @@ import fr.gouret.music_player_android.model.SongList;
  */
 public class DownloadSongAsyncTask extends AsyncTaskLoader<ArrayList<Song>> {
     SongList songList;
+    int position; 
+    String desiredString;
 
+    public DownloadSongAsyncTask(Context context, int position, String desiredString) {
+        super(context);
+        this.position = position; 
+        this.desiredString = desiredString; 
+    }
     public DownloadSongAsyncTask(Context context) {
         super(context);
+        this.position = -1;
+        this.desiredString = "";
     }
+
+
     @Override
     public ArrayList<Song> loadInBackground() {
+        if (position != -1) {
+            switch (position){
+                case 0:
+                    return SongList.getInstance().scanSongs(getContext(), "external");
+                case 1 :
+                    return SongList.getInstance().getSongsByAlbum(desiredString);
+                case 2 :
+                    return SongList.getInstance().getSongsByArtist(desiredString);
+                case 3 :
+                    return SongList.getInstance().getSongsByGenre(desiredString);
+            }
+        }
         return SongList.getInstance().scanSongs(getContext(), "external");
+
+
+
     }
 
 }

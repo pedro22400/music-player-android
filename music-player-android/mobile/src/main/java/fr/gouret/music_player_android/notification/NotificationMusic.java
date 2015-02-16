@@ -2,15 +2,12 @@ package fr.gouret.music_player_android.notification;
 
 import android.app.Notification;
 import android.app.NotificationManager;
-import android.app.PendingIntent;
 import android.app.Service;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.widget.RemoteViews;
 
-import fr.gouret.music_player_android.R;
-import fr.gouret.music_player_android.activity.ListMusique;
 import fr.gouret.music_player_android.model.Song;
 
 /**

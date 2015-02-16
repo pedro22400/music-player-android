@@ -16,14 +16,14 @@ import fr.gouret.music_player_android.model.Song;
 import quickScroll.QuickScroll;
 import quickScroll.Scrollable;
 
-public class SongAdapter extends BaseAdapter  implements Scrollable{
+
+public class SongAdapter extends BaseAdapter implements Scrollable{
 	
 	//song list and layout
 	private ArrayList<Song> songs;
 	private LayoutInflater songInf;
     private Context c;
 
-	
 	//constructor
 	public SongAdapter(Context c, ArrayList<Song> theSongs){
 		songs=theSongs;
@@ -31,15 +31,14 @@ public class SongAdapter extends BaseAdapter  implements Scrollable{
         this.c= c;
 	}
 
-
-	@Override
+   	@Override
 	public int getCount() {
 		return songs.size();
 	}
 
 	@Override
 	public Song getItem(int arg0) {
-		return songs.get(arg0);
+		return songs.get(arg0)  ;
 	}
 
 	@Override
