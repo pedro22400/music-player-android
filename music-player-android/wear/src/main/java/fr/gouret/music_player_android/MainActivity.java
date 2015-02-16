@@ -132,12 +132,12 @@ public class MainActivity extends Activity implements ConnectionCallbacks,
                 @Override
                 public void run() {
                     TextView txTitle = (TextView) findViewById(R.id.title);
-                    TextView txAlbum = (TextView) findViewById(R.id.album);
+//                    TextView txAlbum = (TextView) findViewById(R.id.album);
                     TextView txArtiste = (TextView) findViewById(R.id.artist);
                     String[] results = event.getPath().split("/");
                     Log.d(TAG, String.valueOf(results.length));
                     txTitle.setText(results[0]);
-                    txAlbum.setText(results[1]);
+//                    txAlbum.setText(results[1]);
                     txArtiste.setText(results[2]);
                     ImageView img = (ImageView)findViewById(R.id.play_pause);
                     img.setImageResource(R.mipmap.pause);

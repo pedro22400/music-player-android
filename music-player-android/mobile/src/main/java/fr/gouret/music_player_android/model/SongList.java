@@ -166,7 +166,9 @@ public class SongList {
 		String SONG_TITLE    = MediaStore.Audio.Media.TITLE;
 		String SONG_ARTIST   = MediaStore.Audio.Media.ARTIST;
 		String SONG_ALBUM    = MediaStore.Audio.Media.ALBUM;
-		String SONG_YEAR     = MediaStore.Audio.Media.YEAR;
+        String SONG_ALBUM_ID    = MediaStore.Audio.Media.ALBUM_ID;
+
+        String SONG_YEAR     = MediaStore.Audio.Media.YEAR;
 		String SONG_TRACK_NO = MediaStore.Audio.Media.TRACK;
 		String SONG_FILEPATH = MediaStore.Audio.Media.DATA;
 		String SONG_DURATION = MediaStore.Audio.Media.DURATION;
@@ -227,7 +229,7 @@ public class SongList {
 				SONG_YEAR,
 				SONG_TRACK_NO,
 				SONG_FILEPATH,
-				SONG_DURATION
+				SONG_DURATION,SONG_ALBUM_ID
 		};
 
 		// Thing that limits results to only show music files.
@@ -257,6 +259,7 @@ public class SongList {
 				song.setYear       (cursor.getInt   (cursor.getColumnIndex(SONG_YEAR)));
 				song.setTrackNumber(cursor.getInt   (cursor.getColumnIndex(SONG_TRACK_NO)));
 				song.setDuration   (cursor.getInt   (cursor.getColumnIndex(SONG_DURATION)));
+                song.setAlbumId    (cursor.getLong(cursor.getColumnIndex(SONG_ALBUM_ID)));
 
 				// Using the previously created genre maps
 				// to fill the current song genre.

@@ -3,7 +3,7 @@
 	android:layout_width="fill_parent"
 	android:layout_height="fill_parent"
 	android:orientation="horizontal"
-	android:background="#FF330000"
+	android:background="@color/white"
 	tools:context=".ListMusique" >
 
 	<!-- song list -->
@@ -11,8 +11,7 @@
 	<ListView
 		android:id="@+id/song_list"
 		android:layout_width="match_parent"
-		android:layout_height="fill_parent" >
-	</ListView>
+		android:layout_height="fill_parent" />
 
     <TextView
         android:id="@id/android:empty"

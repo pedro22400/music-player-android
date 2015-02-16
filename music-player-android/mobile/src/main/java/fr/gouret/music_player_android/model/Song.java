@@ -1,6 +1,19 @@
 package fr.gouret.music_player_android.model;
 
 
+import android.content.ContentUris;
+import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
+import android.provider.MediaStore;
+import android.util.Log;
+
+import java.io.FileNotFoundException;
+import java.io.IOException;
+
+import fr.gouret.music_player_android.R;
+
 /**
  * Represents a single audio file on the Android system.
  *
@@ -14,7 +27,7 @@ package fr.gouret.music_player_android.model;
 public class Song {
 
 	private long id;
-	private String filePath;
+	private String photoPath;
 
 	/**
 	 * Creates a new Song, with specified `songID` and `filePath`.
@@ -25,7 +38,7 @@ public class Song {
  
 	public Song(long id, String filePath) {
 		this.id        = id;
-		this.filePath  = filePath;
+		this.photoPath  = filePath;
 	}
 
     public Song( long id, String title, String artist) {
@@ -46,7 +59,7 @@ public class Song {
 	 * Full path for the music file within the filesystem.
 	 */
 	public String getFilePath() {
-		return filePath;
+		return photoPath;
 	}
 
 	// optional metadata
@@ -59,8 +72,19 @@ public class Song {
 	private int    track_no    = -1;
 	private long   duration_ms = -1;
 
+    public long getAlbumId() {
+        return albumId;
+    }
 
-	public String getTitle() {
+    public void setAlbumId(long albumId) {
+        this.albumId = albumId;
+    }
+
+    private long   albumId = -1;
+
+
+
+    public String getTitle() {
 		return title;
 	}
 	public void setTitle(String title) {
@@ -125,4 +149,37 @@ public class Song {
 	public long getDurationMinutes() {
 		return getDurationSeconds() / 60;
 	}
+
+    
+    public Bitmap getImage(Context context) {
+//        Long albumId = cursor.getLong(cursor
+//                .getColumnIndexOrThrow(MediaStore.Audio.Media.ALBUM_ID));
+
+        Uri sArtworkUri = Uri
+                .parse("content://media/external/audio/albumart");
+        Uri albumArtUri = ContentUris.withAppendedId(sArtworkUri, albumId);
+
+        Log.d("TAG", albumArtUri.toString());
+        Bitmap bitmap = null;
+        try {
+            bitmap = MediaStore.Images.Media.getBitmap(
+                    context.getContentResolver(), albumArtUri);
+           bitmap = Bitmap.createScaledBitmap(bitmap, 60, 60, true);
+
+        } catch (FileNotFoundException exception) {
+            exception.printStackTrace();
+            bitmap = BitmapFactory.decodeResource(context.getResources(),
+                    R.drawable.notes);
+        } catch (IOException e) {
+
+            e.printStackTrace();
+        } catch (NullPointerException e){
+            bitmap = BitmapFactory.decodeResource(context.getResources(),
+                    R.drawable.notes);
+        }
+
+        return bitmap;
+
+    }
+    
 }
