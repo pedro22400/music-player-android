@@ -2,8 +2,18 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
     android:layout_height="match_parent" android:orientation="vertical"
-    tools:context=".MainActivity" tools:deviceIds="wear_square"
-    android:background="@mipmap/notes">
+    tools:context=".MainActivity" tools:deviceIds="wear_square">
+    <View
+        android:id="@+id/cover"
+        android:alpha="0.7"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentLeft="true"   
+        android:background="@mipmap/notes"/>
+        
     <View
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -17,10 +27,10 @@
         android:alpha="0.2"
         />
     <ImageView
-            android:id="@+id/play_pause"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:src="@mipmap/play"
+        android:id="@+id/play_pause"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:src="@mipmap/play"
         android:onClick="play"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
@@ -65,8 +75,4 @@
         android:textSize="12sp"
         android:layout_below="@id/title"
         />
-
-
-
-
 </RelativeLayout>

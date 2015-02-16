@@ -5,10 +5,12 @@ package fr.gouret.music_player_android.service;
  */
 
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.Random;
 
 import android.app.Notification;
@@ -21,6 +23,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.IntentSender;
+import android.graphics.Bitmap;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.media.RemoteControlClient;
@@ -37,8 +40,13 @@ import android.widget.Toast;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.ResultCallback;
+import com.google.android.gms.wearable.Asset;
+import com.google.android.gms.wearable.DataApi;
+import com.google.android.gms.wearable.DataEventBuffer;
 import com.google.android.gms.wearable.MessageApi;
 import com.google.android.gms.wearable.MessageEvent;
+import com.google.android.gms.wearable.PutDataMapRequest;
+import com.google.android.gms.wearable.PutDataRequest;
 import com.google.android.gms.wearable.Wearable;
 
 import fr.gouret.music_player_android.R;
@@ -102,10 +110,16 @@ import fr.gouret.music_player_android.notification.NotificationMusic;
  *   Services and lotsa stuff
  *   http://developer.android.com/guide/topics/media/mediaplayer.html
  */
+
+
+
 public class ServicePlayMusic extends Service
         implements MediaPlayer.OnPreparedListener, MediaPlayer.OnErrorListener,
         MediaPlayer.OnCompletionListener, GoogleApiClient.ConnectionCallbacks,GoogleApiClient.OnConnectionFailedListener,
-        MessageApi.MessageListener {
+        MessageApi.MessageListener, DataApi.DataListener {
+
+    private static final String IMAGE_PATH = "/image";
+    private static final String IMAGE_KEY = "photo";
     private static final int REQUEST_RESOLVE_ERROR = 34;
     //media player
     private MediaPlayer player;
@@ -141,6 +155,7 @@ public class ServicePlayMusic extends Service
     @Override
     public void onDestroy() {
         Wearable.MessageApi.removeListener(mGoogleApiClient, this);
+        Wearable.DataApi.removeListener(mGoogleApiClient, this);
         mGoogleApiClient.disconnect();
         super.onDestroy();
     }
@@ -164,6 +179,8 @@ public class ServicePlayMusic extends Service
     @Override
     public void onConnected(Bundle bundle) {
         Wearable.MessageApi.addListener(mGoogleApiClient, this);
+        Wearable.DataApi.addListener(mGoogleApiClient, this);
+
     }
 
     @Override
@@ -201,6 +218,12 @@ public class ServicePlayMusic extends Service
         }
 
     }
+
+    @Override
+    public void onDataChanged(DataEventBuffer dataEvents) {
+        
+    }
+
     //binder
     public class MusicBinder extends Binder {
         public ServicePlayMusic getService() {
@@ -258,6 +281,7 @@ public class ServicePlayMusic extends Service
                 }
         );
         sendInfo(playSong);
+        sendPhoto(playSong.getImage(this.getBaseContext()));
 
     }
 
@@ -266,8 +290,44 @@ public class ServicePlayMusic extends Service
                 mGoogleApiClient, "envoieTitre", song.getTitle() + "/" + song.getAlbum() + "/"+song.getArtist() + "/", new byte[0]
         );
 
+        
 
     }
+
+    private void sendPhoto(Bitmap bitmap) {
+        PutDataMapRequest dataMap = PutDataMapRequest.create(IMAGE_PATH);
+        dataMap.getDataMap().putAsset(IMAGE_KEY,toAsset(bitmap));
+        dataMap.getDataMap().putLong("time", new Date().getTime());
+        PutDataRequest request = dataMap.asPutDataRequest();
+        Wearable.DataApi.putDataItem(mGoogleApiClient, request)
+                .setResultCallback(new ResultCallback<DataApi.DataItemResult>() {
+                    @Override
+                    public void onResult(DataApi.DataItemResult dataItemResult) {
+                        Log.d("Service", "Sending image was successful: " + dataItemResult.getStatus()
+                                .isSuccess());
+                    }
+                });
+
+    }
+
+    private static Asset toAsset(Bitmap bitmap){
+        ByteArrayOutputStream byteStream = null;
+        try {
+            byteStream = new ByteArrayOutputStream();
+            bitmap.compress(Bitmap.CompressFormat.PNG, 100, byteStream);
+            return Asset.createFromBytes(byteStream.toByteArray());
+        } finally {
+            if (null != byteStream) {
+                try {
+                    byteStream.close();
+                } catch (IOException e) {
+                    // ignore
+                }
+            }
+        }
+        
+    } 
+
     
     //set the song
     public void setSong(int songIndex){

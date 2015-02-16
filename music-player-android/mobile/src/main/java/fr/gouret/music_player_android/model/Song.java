@@ -152,8 +152,6 @@ public class Song {
 
     
     public Bitmap getImage(Context context) {
-//        Long albumId = cursor.getLong(cursor
-//                .getColumnIndexOrThrow(MediaStore.Audio.Media.ALBUM_ID));
 
         Uri sArtworkUri = Uri
                 .parse("content://media/external/audio/albumart");
@@ -164,20 +162,18 @@ public class Song {
         try {
             bitmap = MediaStore.Images.Media.getBitmap(
                     context.getContentResolver(), albumArtUri);
-           bitmap = Bitmap.createScaledBitmap(bitmap, 60, 60, true);
+           bitmap = Bitmap.createScaledBitmap(bitmap,320,320, true);
 
         } catch (FileNotFoundException exception) {
             exception.printStackTrace();
             bitmap = BitmapFactory.decodeResource(context.getResources(),
                     R.drawable.notes);
         } catch (IOException e) {
-
             e.printStackTrace();
         } catch (NullPointerException e){
             bitmap = BitmapFactory.decodeResource(context.getResources(),
                     R.drawable.notes);
         }
-
         return bitmap;
 
     }

@@ -32,6 +32,7 @@ import android.view.WindowManager;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -63,8 +64,10 @@ public class MainActivity extends Activity implements ConnectionCallbacks,
         OnConnectionFailedListener, DataApi.DataListener, MessageApi.MessageListener,
         NodeApi.NodeListener {
 
+    private static final String IMAGE_PATH = "/image";
+    private static final String IMAGE_KEY = "photo";
     private static final String TAG = "MainActivity";
-
+    private View relativeLayout ;
     private GoogleApiClient mGoogleApiClient;
 
     private Handler mHandler;
@@ -75,7 +78,7 @@ public class MainActivity extends Activity implements ConnectionCallbacks,
         mHandler = new Handler();
         setContentView(R.layout.activity_main);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-
+        relativeLayout = (View)findViewById(R.id.cover);
         mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .addApi(Wearable.API)
                 .addConnectionCallbacks(this)
@@ -118,8 +121,25 @@ public class MainActivity extends Activity implements ConnectionCallbacks,
     @Override
     public void onDataChanged(DataEventBuffer dataEvents) {
         Log.d(TAG, "onDataChanged(): " + dataEvents);
-
-
+        final List<DataEvent> events = FreezableUtils.freezeIterable(dataEvents);
+        dataEvents.close();
+        for (DataEvent event : events) {
+            String path = event.getDataItem().getUri().getPath();
+            if (IMAGE_PATH.equals(path)) {
+                DataMapItem dataMapItem = DataMapItem.fromDataItem(event.getDataItem());
+                Asset photo = dataMapItem.getDataMap()
+                        .getAsset(IMAGE_KEY);
+                final Bitmap bitmap =loadBitmapFromAsset(mGoogleApiClient, photo);
+                mHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        relativeLayout = (View)findViewById(R.id.cover);
+                        Log.d(TAG, "Setting background image..");
+                        relativeLayout.setBackground(new BitmapDrawable(getResources(), bitmap));
+                    }
+                });
+            }
+        }
     }
     @Override
     public void onMessageReceived(final MessageEvent event) {
@@ -182,5 +202,24 @@ public class MainActivity extends Activity implements ConnectionCallbacks,
     }
     public void prev(View v){
         Wearable.MessageApi.sendMessage(mGoogleApiClient, "Action", "PREV",new byte[0]);
+    }
+
+    /**
+     * Extracts {@link android.graphics.Bitmap} data from the
+     * {@link com.google.android.gms.wearable.Asset}
+     */
+    private Bitmap loadBitmapFromAsset(GoogleApiClient apiClient, Asset asset) {
+        if (asset == null) {
+            throw new IllegalArgumentException("Asset must be non-null");
+        }
+
+        InputStream assetInputStream = Wearable.DataApi.getFdForAsset(
+                apiClient, asset).await().getInputStream();
+
+        if (assetInputStream == null) {
+            Log.w(TAG, "Requested an unknown Asset.");
+            return null;
+        }
+        return BitmapFactory.decodeStream(assetInputStream);
     }
 }
