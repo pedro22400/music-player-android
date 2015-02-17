@@ -101,6 +101,8 @@ public class SongList {
 	 */
 	public ArrayList<Song> scanSongs(Context c, String fromWhere) {
 
+        songs.clear();
+        
 		// This is a rather complex function that interacts with
 		// the underlying Android database.
 		// Grab some coffee and stick to the comments.

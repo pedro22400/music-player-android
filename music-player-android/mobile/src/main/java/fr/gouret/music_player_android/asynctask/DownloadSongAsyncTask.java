@@ -13,19 +13,15 @@ import fr.gouret.music_player_android.model.SongList;
  */
 public class DownloadSongAsyncTask extends AsyncTaskLoader<ArrayList<Song>> {
     SongList songList;
-    int position; 
-    String desiredString;
+    int position = -1 ;
+    String desiredString = "";
 
     public DownloadSongAsyncTask(Context context, int position, String desiredString) {
         super(context);
         this.position = position; 
         this.desiredString = desiredString; 
     }
-    public DownloadSongAsyncTask(Context context) {
-        super(context);
-        this.position = -1;
-        this.desiredString = "";
-    }
+
 
 
     @Override

@@ -41,6 +41,7 @@ import com.google.android.gms.wearable.Wearable;
 import fr.gouret.music_player_android.R;
 import fr.gouret.music_player_android.activity.ListMusiqueFragment;
 import fr.gouret.music_player_android.model.Song;
+import fr.gouret.music_player_android.notification.NotificationMusic;
 
 
 /**
@@ -334,22 +335,10 @@ public class ServicePlayMusic extends Service
         //start playback
         mp.start();
         songTitle=songs.get(songPosn).getTitle();
-        Intent notIntent = new Intent(this, ListMusiqueFragment.class);
-        notIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        PendingIntent pendInt = PendingIntent.getActivity(this, 0,
-                notIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        NotificationMusic notificationMusic = new NotificationMusic(); 
+        notificationMusic.notifySong(getBaseContext(), this,songs.get(songPosn), !isPng() );
 
-        Notification.Builder builder = new Notification.Builder(this);
 
-        builder.setContentIntent(pendInt)
-                .setSmallIcon(R.drawable.play)
-                .setTicker(songTitle)
-                .setOngoing(true)
-                .setContentTitle("Playing")
-        .setContentText(songTitle);
-        Notification not = builder.build();
-
-        startForeground(NOTIFY_ID, not);
     }
 
     public int getPosn(){
@@ -366,6 +355,9 @@ public class ServicePlayMusic extends Service
 
     public void pausePlayer(){
         player.pause();
+        NotificationMusic notificationMusic = new NotificationMusic();
+        notificationMusic.notifySong(getBaseContext(), this,songs.get(songPosn), !isPng() );
+        
     }
 
     public void seek(int posn){

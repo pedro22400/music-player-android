@@ -1,5 +1,6 @@
 package fr.gouret.music_player_android.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -38,7 +39,10 @@ public class ArtisteFragment extends Fragment {
         albumView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-
+                Intent intent = new Intent(getActivity(), ListMusiqueActivity.class);
+                intent.putExtra("position",2);
+                intent.putExtra("desiredString",SongList.getInstance().getArtists().get(i));
+                ArtisteFragment.this.getActivity().startActivity(intent);
 
             }
         });

@@ -13,6 +13,9 @@ import android.os.Build;
 import android.widget.ListView;
 
 import fr.gouret.music_player_android.R;
+import fr.gouret.music_player_android.helper.MusicControllerHelper;
+import fr.gouret.music_player_android.helper.ServiceHelper;
+import fr.gouret.music_player_android.model.MusicController;
 
 public class ListMusiqueActivity extends ActionBarActivity {
 
@@ -34,7 +37,9 @@ public class ListMusiqueActivity extends ActionBarActivity {
                     .commit();
     }
 
+    @Override
+    protected void onPostCreate(Bundle savedInstanceState) {
+        super.onPostCreate(savedInstanceState);
 
-
-
+    }
 }
