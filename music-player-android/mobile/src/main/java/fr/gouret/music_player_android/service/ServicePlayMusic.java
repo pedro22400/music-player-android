@@ -323,6 +323,8 @@ public class ServicePlayMusic extends Service
 
     @Override
     public void onCompletion(MediaPlayer mp) {
+        Log.d("ServicePlayMusic", "onCompletion");
+        playNext();
     }
 
     @Override
