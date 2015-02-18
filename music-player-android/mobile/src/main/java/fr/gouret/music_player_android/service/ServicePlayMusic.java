@@ -9,6 +9,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Random;
 
 import android.app.Notification;
 import android.app.PendingIntent;
@@ -105,6 +106,9 @@ public class ServicePlayMusic extends Service
         MediaPlayer.OnCompletionListener, GoogleApiClient.ConnectionCallbacks,GoogleApiClient.OnConnectionFailedListener,
         MessageApi.MessageListener, DataApi.DataListener {
 
+
+    private boolean shuffle=false;
+    private Random rand;
     private static final String IMAGE_PATH = "/image";
     private static final String IMAGE_KEY = "photo";
     private static final int REQUEST_RESOLVE_ERROR = 34;
@@ -127,6 +131,7 @@ public class ServicePlayMusic extends Service
         super.onCreate();
         //initialize position
         songPosn=0;
+        rand=new Random();
         //create player
         player = new MediaPlayer();
         //initialize
@@ -371,23 +376,42 @@ public class ServicePlayMusic extends Service
     }
     
     public void playNext(){
-        this.songPosn++;
-        if (songPosn==songs.size() ){
-            songPosn = 0;
+        if (shuffle){
+            this.songPosn = rand.nextInt(songs.size()); 
+        } else {
+            this.songPosn++;
+            if (songPosn==songs.size() ){
+                songPosn = 0;
+            }
         }
+        
+
         playSong();
         
     }
 
     public void playPrev(){
-        this.songPosn--;
-        if (songPosn<0){
-            songPosn = songs.size()-1; 
+        if (shuffle){
+            this.songPosn = rand.nextInt(songs.size());
+        } else {
+            this.songPosn--;
+            if (songPosn < 0) {
+                songPosn = songs.size() - 1;
+            }
         }
         playSong();
 
     }
 
+    public void setShuffle(){
+        if(shuffle) shuffle=false;
+        else shuffle=true;
+    }
+    
+    public boolean isShuffle(){
+        return shuffle;
+        
+    }
 
 
 }

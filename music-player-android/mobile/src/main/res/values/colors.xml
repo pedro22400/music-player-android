@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="bleuRoi">#3CA4F4</color>
+    <color name="bleuRoi">#ff144f72</color>
+    <color name="bleuLight">#ffb6d3eb</color>
     <color name="white">#fffffbea</color>
     
 </resources>

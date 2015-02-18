@@ -1,5 +1,41 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools" android:id="@+id/container"
-    android:layout_width="match_parent" android:layout_height="match_parent"
-    tools:context="fr.gouret.music_player_android.activity.ListMusiqueActivity"
-    tools:ignore="MergeRootFrame" />
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical">
+    <LinearLayout
+        android:id="@+id/lecture_aleatoire"
+        android:layout_width="fill_parent"
+        android:layout_height="55dp"
+        android:orientation="horizontal"
+        android:layout_gravity="center_horizontal"
+        android:background="@color/bleuLight"
+        android:clickable="true"
+        android:onClick="random"
+        >
+        <ImageView
+            android:layout_width="45dp"
+            android:layout_height="45dp"
+            android:layout_marginTop="5dp"
+            android:src="@drawable/rand"
+            android:layout_marginLeft="65dp"
+            android:scaleType="fitCenter"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="fill_parent"
+            android:text="Lecture aléatoire"
+            android:textColor="@color/bleuRoi"
+            android:textSize="20sp"
+            android:gravity="center_vertical"
+            android:layout_marginLeft="15dp"/>
+
+    </LinearLayout>
+    <FrameLayout  android:id="@+id/container"
+        android:layout_width="match_parent" android:layout_height="match_parent"
+        tools:context="fr.gouret.music_player_android.activity.ListMusiqueActivity"
+        tools:ignore="MergeRootFrame" />
+
+</LinearLayout>
+
+    

@@ -24,8 +24,7 @@ public class ListMusiqueActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_list_musique);
         Bundle extras = getIntent().getExtras();
-        int position = extras.getInt("position");
-        String desired = extras.getString("desiredString");
+        findViewById(R.id.lecture_aleatoire).setVisibility(View.VISIBLE);
 
         Bundle arguments = new Bundle();
             arguments.putString("desiredString",extras.getString("desiredString"));
@@ -40,6 +39,15 @@ public class ListMusiqueActivity extends ActionBarActivity {
     @Override
     protected void onPostCreate(Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
+
+    }
+    public void random(View v){
+        if (ServiceHelper.getInstance().getMusicService().isShuffle()){
+            findViewById(R.id.lecture_aleatoire).setBackgroundColor(getResources().getColor(R.color.bleuLight));
+        } else {
+            findViewById(R.id.lecture_aleatoire).setBackgroundColor(getResources().getColor(R.color.white));
+        }
+        ServiceHelper.getInstance().getMusicService().setShuffle();
 
     }
 }
