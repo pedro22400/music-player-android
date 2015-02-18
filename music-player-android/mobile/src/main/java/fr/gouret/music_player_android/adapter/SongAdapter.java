@@ -11,6 +11,8 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.squareup.picasso.Picasso;
+
 import fr.gouret.music_player_android.R;
 import fr.gouret.music_player_android.model.Song;
 import quickScroll.QuickScroll;
