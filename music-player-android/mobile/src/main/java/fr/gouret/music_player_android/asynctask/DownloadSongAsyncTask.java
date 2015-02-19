@@ -31,11 +31,12 @@ public class DownloadSongAsyncTask extends AsyncTaskLoader<ArrayList<Song>> {
                 case 0:
                     return SongList.getInstance().scanSongs(getContext(), "external");
                 case 1 :
-                    return SongList.getInstance().getSongsByAlbum(desiredString);
+                    return SongList.getInstance().getSongsByGenre(desiredString);
                 case 2 :
                     return SongList.getInstance().getSongsByArtist(desiredString);
                 case 3 :
-                    return SongList.getInstance().getSongsByGenre(desiredString);
+                    return SongList.getInstance().getSongsByAlbum(desiredString);
+
             }
         }
         return SongList.getInstance().scanSongs(getContext(), "external");

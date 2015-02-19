@@ -75,6 +75,42 @@ public class SongList {
 	public boolean isScanning() {
 		return scanningSongs;
 	}
+    
+    
+    public HashMap<String, String> scanGenre(Context c, String fromWhere){
+        Uri genreUri = ((fromWhere == "internal") ?
+                MediaStore.Audio.Genres.INTERNAL_CONTENT_URI:
+                MediaStore.Audio.Genres.EXTERNAL_CONTENT_URI);
+        String GENRE_ID      = MediaStore.Audio.Genres._ID;
+        String GENRE_NAME    = MediaStore.Audio.Genres.NAME;
+        // Creating the map  "Genre IDs" -> "Genre Names"
+        genreIdToGenreNameMap = new HashMap<String, String>();
+
+        // This is what we'll ask of the genres
+        String[] genreColumns = {
+                GENRE_ID,
+                GENRE_NAME
+        };
+        // Gives us access to query for files on the system.
+        ContentResolver resolver = c.getContentResolver();
+
+        // We use this thing to iterate through the results
+        // of a SQLite database query.
+        Cursor cursor;
+
+
+        // Actually querying the genres database
+        cursor = resolver.query(genreUri, genreColumns, null, null, null);
+
+        // Iterating through the results and filling the map.
+        for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext())
+            genreIdToGenreNameMap.put(cursor.getString(0), cursor.getString(1));
+
+        cursor.close();
+        return genreIdToGenreNameMap;
+        
+    }
+    
 
 	/**
 	 * Scans the device for songs.
@@ -391,15 +427,17 @@ public class SongList {
 	 * Returns an alphabetically sorted list with all
 	 * existing genres on the scanned songs.
 	 */
-	public ArrayList<String> getGenres() {
+	public ArrayList<String> getGenres(Context c) {
 
 		ArrayList<String> genres = new ArrayList<String>();
-
+        if (genreIdToGenreNameMap == null || genreIdToGenreNameMap.size() == 0){
+            genreIdToGenreNameMap = this.scanGenre(c, "external");
+        }
+        
 		for (String genre : genreIdToGenreNameMap.values())
 			genres.add(genre);
 
 		Collections.sort(genres);
-
 		return genres;
 	}
 

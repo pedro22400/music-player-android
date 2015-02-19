@@ -12,6 +12,7 @@ import android.widget.RemoteViews;
 
 import fr.gouret.music_player_android.R;
 import fr.gouret.music_player_android.activity.MainActivity;
+import fr.gouret.music_player_android.activity.PlayNowActivity;
 import fr.gouret.music_player_android.helper.ServiceHelper;
 import fr.gouret.music_player_android.model.Song;
 
@@ -75,7 +76,7 @@ public class NotificationMusic extends Notification {
 
 
         // Intent that launches the "Now Playing" Activity
-        Intent notifyIntent = new Intent(context, MainActivity.class);
+        Intent notifyIntent = new Intent(context, PlayNowActivity.class);
         notifyIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 
         // Letting the Intent be executed later by other application.

@@ -60,17 +60,19 @@ public class SongAdapter extends BaseAdapter implements Scrollable{
         TextView albumView = (TextView)songLay.findViewById(R.id.song_album);
 
         ImageView imageView = (ImageView)songLay.findViewById(R.id.art_album); 
-        
+        if (songs.size() > 0){
+            Song currSong = songs.get(position);
+            //get title and artist strings
+            songView.setText(currSong.getTitle());
+            artistView.setText(currSong.getArtist());
+            albumView.setText(currSong.getAlbum());
+            imageView.setImageBitmap(currSong.getImage(this.c));
+
+            //set position as tag
+            songLay.setTag(position);
+        }
 		//get song using position
-		Song currSong = songs.get(position);
-		//get title and artist strings
-		songView.setText(currSong.getTitle());
-		artistView.setText(currSong.getArtist());
-        albumView.setText(currSong.getAlbum());
-        imageView.setImageBitmap(currSong.getImage(this.c));
-        
-		//set position as tag
-		songLay.setTag(position);
+
 
 
         return songLay;

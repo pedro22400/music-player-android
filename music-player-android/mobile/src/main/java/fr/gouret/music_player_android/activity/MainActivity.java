@@ -18,64 +18,39 @@ import fr.gouret.music_player_android.service.ServicePlayMusic;
 /**
  * Created by pierregouret on 16/02/15.
  */
-public class MainActivity extends FragmentActivity implements
-        ActionBar.TabListener {
+public class MainActivity extends FragmentActivity {
+    
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_activity);
         // Initialize the ViewPager and set an adapter
-        findViewById(R.id.lecture_aleatoire).setVisibility(View.VISIBLE);
-        findViewById(R.id.lecture_aleatoire).setBackgroundColor(getResources().getColor(R.color.white));
-
-
         ViewPager pager = (ViewPager) findViewById(R.id.pager);
         pager.setAdapter(new TabsPagerAdapter(getSupportFragmentManager()));
+
         // Bind the tabs to the ViewPager
         PagerSlidingTabStrip tabs = (PagerSlidingTabStrip) findViewById(R.id.tabs);
         tabs.setViewPager(pager);
-        tabs.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-            @Override
-            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-                if (position == 0){
-                    findViewById(R.id.lecture_aleatoire).setVisibility(View.VISIBLE);
-                } else {
-                    findViewById(R.id.lecture_aleatoire).setVisibility(View.GONE);
-                }
-            }
-
-            @Override
-            public void onPageSelected(int position) {
-                if (position == 0){
-                    findViewById(R.id.lecture_aleatoire).setVisibility(View.VISIBLE);
-                } else {
-                    findViewById(R.id.lecture_aleatoire).setVisibility(View.GONE);
-                }
-            }
-
-            @Override
-            public void onPageScrollStateChanged(int state) {
-
-            }
-        });
-    }
-
-    @Override
-    public void onTabSelected(ActionBar.Tab tab, FragmentTransaction fragmentTransaction) {
 
     }
 
     @Override
-    public void onTabUnselected(ActionBar.Tab tab, FragmentTransaction fragmentTransaction) {
-
+    protected void onResume() {
+        super.onResume();
+        ViewPager pager = (ViewPager) findViewById(R.id.pager);
+        pager.setCurrentItem(ServiceHelper.getInstance().getSelectedItem());
+        
     }
 
     @Override
-    public void onTabReselected(ActionBar.Tab tab, FragmentTransaction fragmentTransaction) {
+    protected void onPause() {
+        ViewPager pager = (ViewPager) findViewById(R.id.pager);
+        ServiceHelper.getInstance().setSelectedItem(pager.getCurrentItem());
+        super.onPause();
 
     }
-    
+
     public void random(View v){
         if (ServiceHelper.getInstance().getMusicService().isShuffle()){
             findViewById(R.id.lecture_aleatoire).setBackgroundColor(getResources().getColor(R.color.bleuLight));

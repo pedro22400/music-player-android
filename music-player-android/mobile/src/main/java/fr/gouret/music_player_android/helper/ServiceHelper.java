@@ -19,6 +19,8 @@ public class ServiceHelper {
     private boolean musicBound = false;
 
     private Intent playIntent;
+    
+    private int selectedItem = 0;
 
 
     private static ServiceHelper ourInstance = new ServiceHelper();
@@ -73,12 +75,25 @@ public class ServiceHelper {
     
     public void stopMusiqueService(Activity act){
         if (musicBound){
-            act.unbindService(musicConnection);
-            act.stopService(playIntent);
-            playIntent = null;
-            musicBound = false;
+            try {
+                act.unbindService(musicConnection);
+                act.stopService(playIntent);
+                playIntent = null;
+                musicBound = false;
+            } catch (IllegalArgumentException e){
+                
+            }
+
 
         }
         
+    }
+
+    public int getSelectedItem() {
+        return selectedItem;
+    }
+
+    public void setSelectedItem(int selectedItem) {
+        this.selectedItem = selectedItem;
     }
 }

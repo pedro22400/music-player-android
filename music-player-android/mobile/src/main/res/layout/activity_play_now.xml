@@ -1,0 +1,48 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+    android:layout_height="match_parent" android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    tools:context="fr.gouret.music_player_android.activity.PlayNowActivity"
+    android:background="@color/bleuRoi"
+    android:orientation="vertical"
+    android:id="@+id/mainLay">
+
+    <TextView
+        android:text="@string/hello_world"
+        android:layout_width="fill_parent"
+        android:layout_height="35dp"
+        android:gravity="center"
+        android:id="@+id/title"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:textColor="@android:color/white"
+/>
+    <TextView
+        android:text="@string/hello_world"
+        android:layout_width="fill_parent"
+        android:layout_height="25dp"
+        android:gravity="center"
+        android:id="@+id/artiste"
+        android:textColor="@android:color/white"
+        android:textSize="16sp"
+        android:textStyle="italic"/>
+    <TextView
+        android:text="@string/hello_world"
+        android:layout_width="fill_parent"
+        android:layout_height="25dp"
+        android:gravity="center"
+        android:id="@+id/album"
+        android:textColor="@android:color/white"
+        android:textSize="16sp"
+        />
+    <ImageView
+        android:id="@+id/art_album"
+        android:src="@drawable/notes"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent" 
+        android:layout_marginBottom="70dp"/>
+    
+
+</LinearLayout>

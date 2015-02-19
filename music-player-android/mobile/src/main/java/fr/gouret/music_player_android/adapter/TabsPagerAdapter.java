@@ -26,7 +26,7 @@ public class TabsPagerAdapter extends FragmentPagerAdapter{
         switch (position){
             case 0:
                 return new ListMusiqueFragment();
-            case 1: 
+            case 1:
                 return new AlbumFragment();
             case 2:
                 return new ArtisteFragment();

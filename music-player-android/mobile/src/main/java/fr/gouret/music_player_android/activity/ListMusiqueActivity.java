@@ -13,7 +13,6 @@ import android.os.Build;
 import android.widget.ListView;
 
 import fr.gouret.music_player_android.R;
-import fr.gouret.music_player_android.helper.MusicControllerHelper;
 import fr.gouret.music_player_android.helper.ServiceHelper;
 import fr.gouret.music_player_android.model.MusicController;
 
@@ -24,10 +23,10 @@ public class ListMusiqueActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_list_musique);
         Bundle extras = getIntent().getExtras();
-        findViewById(R.id.lecture_aleatoire).setVisibility(View.VISIBLE);
 
         Bundle arguments = new Bundle();
             arguments.putString("desiredString",extras.getString("desiredString"));
+        setTitle(extras.getString("desiredString"));
         arguments.putInt("position", extras.getInt("position"));
         ListMusiqueFragment fragment = new ListMusiqueFragment();
         fragment.setArguments(arguments);

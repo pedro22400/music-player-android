@@ -121,7 +121,7 @@ public class ServicePlayMusic extends Service
     //binder
     private final IBinder musicBind = new MusicBinder();
     private GoogleApiClient mGoogleApiClient;
-
+     
 
     private String songTitle;
     private static final int NOTIFY_ID=1;
@@ -412,6 +412,17 @@ public class ServicePlayMusic extends Service
         return shuffle;
         
     }
-
+    
+    public Song getCurrentSong(){
+        return songs.get(songPosn);
+        
+    }
+    
+    public void setLooping(){
+        player.setLooping(!player.isLooping());
+    }
+    public boolean isLooping(){
+       return player.isLooping();
+    }
 
 }

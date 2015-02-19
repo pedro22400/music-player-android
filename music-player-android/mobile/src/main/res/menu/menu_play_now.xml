@@ -1,0 +1,22 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="fr.gouret.music_player_android.activity.PlayNowActivity">
+        <!-- Search, should appear as action button -->
+        <item
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/action_rand"
+            android:icon="@drawable/rand"
+            android:checkable="true"
+            android:title=""
+            app:showAsAction="always"
+            />
+        <!-- Settings, should always be in the overflow -->
+        <item
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/repeat"
+            android:icon="@drawable/repeat"
+            android:title=""
+            app:showAsAction="always"
+
+            />
+</menu>

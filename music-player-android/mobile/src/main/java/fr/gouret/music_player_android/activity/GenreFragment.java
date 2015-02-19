@@ -32,7 +32,7 @@ public class GenreFragment extends Fragment {
     public void onResume() {
         super.onResume();
         albumView = (ListView) getView().findViewById(R.id.song_list);
-        GenreAdapter songAdt = new GenreAdapter(this.getActivity().getApplicationContext(), SongList.getInstance().getGenres());
+        GenreAdapter songAdt = new GenreAdapter(this.getActivity().getApplicationContext(), SongList.getInstance().getGenres(this.getActivity()));
         albumView.setAdapter(songAdt);
         albumView.setChoiceMode(AbsListView.CHOICE_MODE_SINGLE);
 
@@ -41,7 +41,7 @@ public class GenreFragment extends Fragment {
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 Intent intent = new Intent(getActivity(), ListMusiqueActivity.class);
                 intent.putExtra("position",3);
-                intent.putExtra("desiredString",SongList.getInstance().getGenres().get(i));
+                intent.putExtra("desiredString",SongList.getInstance().getGenres(getActivity()).get(i));
                 GenreFragment.this.getActivity().startActivity(intent);
 
             }

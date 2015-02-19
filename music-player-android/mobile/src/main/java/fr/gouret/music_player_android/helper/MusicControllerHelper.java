@@ -1,10 +1,12 @@
 package fr.gouret.music_player_android.helper;
 
 import android.app.Activity;
+import android.content.Context;
 import android.view.View;
 import android.widget.MediaController;
 
 import fr.gouret.music_player_android.R;
+import fr.gouret.music_player_android.activity.PlayNowActivity;
 import fr.gouret.music_player_android.model.MusicController;
 
 /**
@@ -13,6 +15,8 @@ import fr.gouret.music_player_android.model.MusicController;
 public class MusicControllerHelper implements MediaController.MediaPlayerControl {
 
     private MusicController musicController;
+    
+    private PlayNowActivity act; 
 
     private static MusicControllerHelper ourInstance = new MusicControllerHelper();
 
@@ -23,23 +27,24 @@ public class MusicControllerHelper implements MediaController.MediaPlayerControl
     private MusicControllerHelper() {
     }
 
-    public void initMusicController(Activity context){
+    public void initMusicController(Context context){
         musicController = new MusicController(context);
         musicController.setPrevNextListeners(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 ServiceHelper.getInstance().getMusicService().playNext();
+                act.initActivity();
                 musicController.show(0);
             }
         }, new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 ServiceHelper.getInstance().getMusicService().playPrev();
+                act.initActivity();
                 musicController.show(0);
             }
         });
         musicController.setMediaPlayer(this);
-        musicController.setAnchorView(context.findViewById(R.id.song_list));
         musicController.setEnabled(true);
     }
 
@@ -51,6 +56,8 @@ public class MusicControllerHelper implements MediaController.MediaPlayerControl
     public void setMusicController(MusicController musicController) {
         this.musicController = musicController;
     }
+    
+    
 
     @Override
     public void start() {
@@ -110,5 +117,13 @@ public class MusicControllerHelper implements MediaController.MediaPlayerControl
     @Override
     public int getAudioSessionId() {
         return 0;
+    }
+
+    public PlayNowActivity getAct() {
+        return act;
+    }
+
+    public void setAct(PlayNowActivity act) {
+        this.act = act;
     }
 }

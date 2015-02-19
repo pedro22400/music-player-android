@@ -26,21 +26,26 @@
         <activity
             android:name=".activity.ListMusiqueActivity"
             android:label="@string/title_activity_list_musique"
-            android:parentActivityName=".activity.MainActivity" 
-             >
-            
+            android:parentActivityName=".activity.MainActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="fr.gouret.music_player_android.activity.MainActivity" />
-s
+
+        </activity>
+        <activity
+            android:name=".activity.PlayNowActivity"
+            android:label="@string/title_activity_play_now"
+            >
         </activity>
 
-        <receiver android:name=".notification.NotificationMusic$NotificationNextButtonHandler" />
-        <receiver android:name=".notification.NotificationMusic$NotificationPauseButtonHandler" />
-        <receiver android:name=".notification.NotificationMusic$NotificationPrevButtonHandler" />
-        <receiver android:name=".notification.NotificationMusic$NotificationPlayButtonHandler" />
-        <receiver android:name=".notification.NotificationMusic$NotificationSeekFromButtonHandler" />
-        <receiver android:name=".notification.NotificationMusic$NotificationSeekToButtonHandler" />
+        <receiver android:name=".notification.NotificationMusic$NotificationNextButtonHandler" android:enabled="true"  android:exported="true"/>
+        <receiver android:name=".notification.NotificationMusic$NotificationPauseButtonHandler" android:enabled="true" android:exported="true"/>
+        <receiver android:name=".notification.NotificationMusic$NotificationPrevButtonHandler" android:enabled="true" android:exported="true"/>
+        <receiver android:name=".notification.NotificationMusic$NotificationPlayButtonHandler" android:enabled="true" android:exported="true" />
+        <!--<receiver android:name=".notification.NotificationMusic$NotificationSeekFromButtonHandler" />-->
+        <!--<receiver android:name=".notification.NotificationMusic$NotificationSeekToButtonHandler" />-->
+
+
     </application>
 
 </manifest>

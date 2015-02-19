@@ -1,5 +1,6 @@
 package fr.gouret.music_player_android.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -14,8 +15,8 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 
 import java.util.ArrayList;
+import java.util.zip.Inflater;
 
-import fr.gouret.music_player_android.helper.MusicControllerHelper;
 import fr.gouret.music_player_android.R;
 import fr.gouret.music_player_android.helper.ServiceHelper;
 import fr.gouret.music_player_android.adapter.SongAdapter;
@@ -27,7 +28,7 @@ import fr.gouret.music_player_android.model.Song;
 public class ListMusiqueFragment extends ListFragment implements LoaderManager.LoaderCallbacks<ArrayList<Song>> {
 
     //song list variables
-    private ListView songView;
+    private View songHeaderView;
 
     int postion;
     String desiredString;
@@ -61,15 +62,15 @@ public class ListMusiqueFragment extends ListFragment implements LoaderManager.L
     @Override
     public void onResume() {
         super.onResume();
-        Log.d("ListMusique","onResume");
+        Log.d("ListMusique", "onResume");
         getLoaderManager().initLoader(0, null, this).forceLoad();
-        MusicControllerHelper.getInstance().initMusicController(this.getActivity());
 
     }
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        
         Bundle bundle = this.getArguments();
         if (bundle != null){
             postion= bundle.getInt("position", -1);
@@ -110,15 +111,13 @@ public class ListMusiqueFragment extends ListFragment implements LoaderManager.L
     @Override
     public void onLoadFinished(android.support.v4.content.Loader<ArrayList<Song>> loader, ArrayList<Song> data) {
         //create and set adapter
+
         final SongAdapter songAdt = new SongAdapter(this.getActivity().getApplicationContext(), data);
         setListAdapter(songAdt);
         getListView().setChoiceMode(AbsListView.CHOICE_MODE_SINGLE);
         if (ServiceHelper.getInstance().getMusicService() != null){
             ServiceHelper.getInstance().getMusicService().setList(data);
         }
-
-
-
     }
 
     @Override
@@ -130,7 +129,8 @@ public class ListMusiqueFragment extends ListFragment implements LoaderManager.L
     public void onListItemClick(ListView l, View v, int position, long id) {
         super.onListItemClick(l, v, position, id);
         ServiceHelper.getInstance().getMusicService().setSong(position);
-        ServiceHelper.getInstance().getMusicService().playSong();
-        MusicControllerHelper.getInstance().getMusicController().show();
+        Intent intent = new Intent(this.getActivity(), PlayNowActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_LAUNCHED_FROM_HISTORY);
+        startActivity(intent);
     }
 }
