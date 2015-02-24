@@ -26,11 +26,17 @@ import fr.gouret.music_player_android.model.SongList;
  */
 public class AlbumFragment extends ListFragment implements LoaderManager.LoaderCallbacks<ArrayList<String>>{
 
+
+    
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         setEmptyText("Pas d'album");
+//        return SongList.getInstance().getAlbums();
+        this.getListView().setBackgroundColor(getResources().getColor(R.color.white));
         this.getListView().setChoiceMode(AbsListView.CHOICE_MODE_SINGLE);
+        AlbumAdpater songAdt = new AlbumAdpater(this.getActivity().getApplicationContext(), SongList.getInstance().getAlbums());
+        this.setListAdapter(songAdt);
 
     }
 
@@ -41,12 +47,13 @@ public class AlbumFragment extends ListFragment implements LoaderManager.LoaderC
         intent.putExtra("position",1);
         intent.putExtra("desiredString",SongList.getInstance().getAlbums().get(position));
         AlbumFragment.this.getActivity().startActivity(intent);
+        this.getActivity().overridePendingTransition(R.anim.anim_left, R.anim.anim_right);
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        getLoaderManager().initLoader(0, null, this).forceLoad();
+//        getLoaderManager().initLoader(0, null, this).forceLoad();
     }
 
 
@@ -57,8 +64,7 @@ public class AlbumFragment extends ListFragment implements LoaderManager.LoaderC
 
     @Override
     public void onLoadFinished(Loader<ArrayList<String>> loader, ArrayList<String> data) {
-        AlbumAdpater songAdt = new AlbumAdpater(this.getActivity().getApplicationContext(), SongList.getInstance().getAlbums());
-        this.setListAdapter(songAdt);
+      
     }
 
     @Override

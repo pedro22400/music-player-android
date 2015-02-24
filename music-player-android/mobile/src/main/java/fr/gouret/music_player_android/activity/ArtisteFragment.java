@@ -1,5 +1,6 @@
 package fr.gouret.music_player_android.activity;
 
+import android.app.ActivityOptions;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -41,8 +42,11 @@ public class ArtisteFragment extends Fragment {
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 Intent intent = new Intent(getActivity(), ListMusiqueActivity.class);
                 intent.putExtra("position",2);
-                intent.putExtra("desiredString",SongList.getInstance().getArtists().get(i));
-                ArtisteFragment.this.getActivity().startActivity(intent);
+                intent.putExtra("desiredString", SongList.getInstance().getArtists().get(i));
+                Bundle bndlanimation =
+                        ActivityOptions.makeCustomAnimation(getActivity().getApplicationContext(), R.anim.anim_right, R.anim.anim_left).toBundle();
+                ArtisteFragment.this.getActivity().startActivity(intent, bndlanimation);
+
 
             }
         });

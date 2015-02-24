@@ -26,6 +26,7 @@ public class PlayNowActivity extends ActionBarActivity {
         setContentView(R.layout.activity_play_now);
         MusicControllerHelper.getInstance().initMusicController(this);
         MusicControllerHelper.getInstance().setAct(this);
+        setTitle("En ce moment");
     }
 
     @Override

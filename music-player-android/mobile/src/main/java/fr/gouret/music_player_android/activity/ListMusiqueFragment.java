@@ -132,5 +132,6 @@ public class ListMusiqueFragment extends ListFragment implements LoaderManager.L
         Intent intent = new Intent(this.getActivity(), PlayNowActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_LAUNCHED_FROM_HISTORY);
         startActivity(intent);
+        this.getActivity().overridePendingTransition(R.anim.anim_up, R.anim.anim_down);
     }
 }

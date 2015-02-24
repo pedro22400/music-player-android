@@ -552,7 +552,7 @@ public class SongList {
 
 			String currentSongGenre = song.getGenre();
 
-			if (currentSongGenre == genreName)
+			if (currentSongGenre.equals(genreName))
 				currentSongs.add(song);
 		}
 
