@@ -123,7 +123,7 @@ public class MainActivity extends Activity implements ConnectionCallbacks,
         Log.d(TAG, "onDataChanged(): " + dataEvents);
         final List<DataEvent> events = FreezableUtils.freezeIterable(dataEvents);
         dataEvents.close();
-        for (DataEvent event : events) {
+        for (final DataEvent event : events) {
             String path = event.getDataItem().getUri().getPath();
             if (IMAGE_PATH.equals(path)) {
                 DataMapItem dataMapItem = DataMapItem.fromDataItem(event.getDataItem());
@@ -138,34 +138,28 @@ public class MainActivity extends Activity implements ConnectionCallbacks,
                         relativeLayout.setBackground(new BitmapDrawable(getResources(), bitmap));
                     }
                 });
+            } else if ("/update-song".equals(path)){
+                final DataMapItem dataMapItem = DataMapItem.fromDataItem(event.getDataItem());
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        TextView txTitle = (TextView) findViewById(R.id.title);
+//                        TextView txAlbum = (TextView) findViewById(R.id.album);
+                        TextView txArtiste = (TextView) findViewById(R.id.artist);
+                        txTitle.setText(dataMapItem.getDataMap().getString("Titre"));
+//                        txAlbum.setText(dataMapItem.getDataMap().getString("Album"));
+                        txArtiste.setText(dataMapItem.getDataMap().getString("Artiste"));
+                    }
+                });
             }
         }
     }
     @Override
     public void onMessageReceived(final MessageEvent event) {
         Log.d(TAG, "onMessageReceived " + event.getPath());
-
         if (event.getPath().equals("/start-activity")){
-            
-        } else {
-            runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    TextView txTitle = (TextView) findViewById(R.id.title);
-//                    TextView txAlbum = (TextView) findViewById(R.id.album);
-                    TextView txArtiste = (TextView) findViewById(R.id.artist);
-                    String[] results = event.getPath().split("/");
-                    Log.d(TAG, String.valueOf(results.length));
-                    txTitle.setText(results[0]);
-//                    txAlbum.setText(results[1]);
-                    txArtiste.setText(results[2]);
-                    ImageView img = (ImageView)findViewById(R.id.play_pause);
-                    img.setImageResource(R.mipmap.pause);
-                    img.setTag(Boolean.TRUE);
-                }});
+
         }
- 
-//        }
     }
 
     @Override
@@ -177,7 +171,7 @@ public class MainActivity extends Activity implements ConnectionCallbacks,
     public void onPeerDisconnected(Node node) {
         Log.d(TAG, "onPeerDisconnected");
     }
-    
+
     public void play(View v){
         final ImageView img = (ImageView)findViewById(R.id.play_pause);
         Wearable.MessageApi.sendMessage(mGoogleApiClient, "Action", "PlAY",new byte[0]).setResultCallback(new ResultCallback<MessageApi.SendMessageResult>() {

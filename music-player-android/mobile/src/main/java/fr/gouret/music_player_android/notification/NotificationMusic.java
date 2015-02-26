@@ -116,7 +116,7 @@ public class NotificationMusic extends Notification {
         Intent buttonSkipIntent = new Intent(context, NotificationNextButtonHandler.class);
         PendingIntent pendingIntentnext = PendingIntent.getBroadcast(context, 5, buttonSkipIntent, PendingIntent.FLAG_UPDATE_CURRENT);
         notificationBuilder.addAction(R.drawable.next, "Next", pendingIntentnext);
-        notificationBuilder.setLocalOnly(true);
+//        notificationBuilder.setLocalOnly(true);
         // create notification
         Notification notif =   notificationBuilder.build();
         notif.flags |= Notification.FLAG_NO_CLEAR; //Do not clear the notification

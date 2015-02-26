@@ -45,7 +45,7 @@ public class PlayNowActivity extends ActionBarActivity {
             public void run() {
                 //Do something after 100ms
                 MusicControllerHelper.getInstance().getMusicController().setAnchorView(findViewById(R.id.mainLay));
-                MusicControllerHelper.getInstance().getMusicController().show(0);
+                MusicControllerHelper.getInstance().getMusicController().show(300000000);
             }
         }, 100);
 

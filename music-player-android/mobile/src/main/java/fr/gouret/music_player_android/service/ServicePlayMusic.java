@@ -41,6 +41,7 @@ import com.google.android.gms.wearable.Wearable;
 
 import fr.gouret.music_player_android.R;
 import fr.gouret.music_player_android.activity.ListMusiqueFragment;
+import fr.gouret.music_player_android.helper.MusicControllerHelper;
 import fr.gouret.music_player_android.model.Song;
 import fr.gouret.music_player_android.notification.NotificationMusic;
 
@@ -208,6 +209,15 @@ public class ServicePlayMusic extends Service
         }else {
             Toast.makeText(this, "Action non valide", Toast.LENGTH_SHORT).show();
         }
+        
+        if (MusicControllerHelper.getInstance().getAct() != null) {
+            MusicControllerHelper.getInstance().getAct().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    MusicControllerHelper.getInstance().getAct().initActivity();
+                }
+            });
+        }
 
     }
 
@@ -277,14 +287,30 @@ public class ServicePlayMusic extends Service
 
     }
 
+//    public void sendInfo(Song song){
+//        Wearable.MessageApi.sendMessage(
+//                mGoogleApiClient, "envoieTitre", song.getTitle() + "/" + song.getAlbum() + "/"+song.getArtist() + "/", new byte[0]
+//        );
+//    }
+
     public void sendInfo(Song song){
-        Wearable.MessageApi.sendMessage(
-                mGoogleApiClient, "envoieTitre", song.getTitle() + "/" + song.getAlbum() + "/"+song.getArtist() + "/", new byte[0]
-        );
 
-        
+        PutDataMapRequest dataMap = PutDataMapRequest.create("/update-song");
 
+        dataMap.getDataMap().putString("Titre",song.getTitle());
+        dataMap.getDataMap().putString("Album", song.getAlbum());
+        dataMap.getDataMap().putString("Artiste", song.getArtist());
+
+        Wearable.DataApi.putDataItem(mGoogleApiClient, dataMap.asPutDataRequest()).
+                setResultCallback(new ResultCallback<DataApi.DataItemResult>() {
+                    @Override
+                    public void onResult(DataApi.DataItemResult dataItemResult) {
+                        Log.d("Service", "Sending data was successful: " + dataItemResult.getStatus()
+                                .isSuccess());
+                    }
+                });
     }
+
 
     private void sendPhoto(Bitmap bitmap) {
         PutDataMapRequest dataMap = PutDataMapRequest.create(IMAGE_PATH);
